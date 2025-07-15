@@ -5,6 +5,7 @@ import { generateSaaSIdea, analyzePainPoints } from "./services/openai";
 import { mcpSimulator } from "./services/mcp-simulator";
 import { contextExtractor } from "./services/context-extractor";
 import { githubPRBot } from "./services/github-pr-bot";
+import { asyncHandler } from "./middleware/security";
 import { 
   insertOpportunitySchema, 
   insertCommunitySchema, 
@@ -17,14 +18,14 @@ import {
 export async function registerRoutes(app: Express): Promise<Server> {
   
   // Opportunities routes
-  app.get("/api/opportunities", async (req, res) => {
+  app.get("/api/opportunities", asyncHandler(async (req, res) => {
     try {
       const opportunities = await storage.getOpportunities();
       res.json(opportunities);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch opportunities" });
     }
-  });
+  }));
 
   app.get("/api/opportunities/:id", async (req, res) => {
     try {

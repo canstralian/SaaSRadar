@@ -30,14 +30,50 @@ export class McpSimulator {
     this.registerBuiltInHandlers();
   }
 
+  private sanitizeParams(params: any): any {
+    if (typeof params !== 'object' || params === null) {
+      return {};
+    }
+
+    const sanitized: any = {};
+    for (const [key, value] of Object.entries(params)) {
+      // Only allow alphanumeric keys
+      if (!/^[a-zA-Z0-9_]+$/.test(key)) {
+        continue;
+      }
+
+      if (typeof value === 'string') {
+        // Basic XSS protection
+        sanitized[key] = value.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+      } else if (typeof value === 'number' && isFinite(value)) {
+        sanitized[key] = value;
+      } else if (typeof value === 'boolean') {
+        sanitized[key] = value;
+      } else if (Array.isArray(value)) {
+        sanitized[key] = value.slice(0, 100); // Limit array size
+      }
+    }
+    return sanitized;
+  }
+
   private registerBuiltInHandlers() {
     // Web Search Handler
     this.toolHandlers.set("web_search", async (params: { query: string; limit?: number }) => {
       const { query, limit = 10 } = params;
       
+      if (!query || typeof query !== 'string') {
+        throw new Error('Query parameter is required and must be a string');
+      }
+
+      if (limit && (typeof limit !== 'number' || limit < 1 || limit > 50)) {
+        throw new Error('Limit must be a number between 1 and 50');
+      }
+      
       // Simulate web search results
       const results = [];
-      for (let i = 0; i < limit; i++) {
+      const actualLimit = Math.min(limit, 50); // Cap at 50 results
+      
+      for (let i = 0; i < actualLimit; i++) {
         results.push({
           title: `Result ${i + 1} for: ${query}`,
           url: `https://example.com/result-${i + 1}`,
@@ -48,7 +84,7 @@ export class McpSimulator {
       
       return {
         query,
-        totalResults: limit * 10,
+        totalResults: actualLimit * 10,
         results: results.sort((a, b) => b.relevanceScore - a.relevanceScore)
       };
     });
@@ -108,6 +144,18 @@ export class McpSimulator {
     const startTime = Date.now();
     
     try {
+      // Input validation
+      if (!Number.isInteger(toolId) || toolId <= 0) {
+        throw new Error('Invalid tool ID');
+      }
+
+      if (params && typeof params !== 'object') {
+        throw new Error('Parameters must be an object');
+      }
+
+      // Sanitize params to prevent injection attacks
+      const sanitizedParams = this.sanitizeParams(params || {});
+
       const tool = await storage.getMcpTool(toolId);
       if (!tool) {
         throw new Error(`Tool with ID ${toolId} not found`);
@@ -122,7 +170,7 @@ export class McpSimulator {
         const schema = tool.schema as any;
         if (schema.required) {
           for (const requiredParam of schema.required) {
-            if (!(requiredParam in params)) {
+            if (!(requiredParam in sanitizedParams)) {
               throw new Error(`Missing required parameter: ${requiredParam}`);
             }
           }
@@ -134,7 +182,13 @@ export class McpSimulator {
         throw new Error(`No handler registered for tool: ${tool.name}`);
       }
 
-      const result = await handler(params);
+      // Add timeout to prevent hanging requests
+      const result = await Promise.race([
+        handler(sanitizedParams),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Tool execution timeout')), 30000)
+        )
+      ]);
       const executionTime = Date.now() - startTime;
 
       // Record the request

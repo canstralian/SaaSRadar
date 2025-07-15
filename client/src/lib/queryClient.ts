@@ -41,17 +41,31 @@ export const getQueryFn: <T>(options: {
     return await res.json();
   };
 
+import { ApiError } from "./api";
+
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      queryFn: getQueryFn({ on401: "throw" }),
-      refetchInterval: false,
+      retry: (failureCount, error) => {
+        // Don't retry 4xx errors
+        if (error instanceof ApiError && error.status >= 400 && error.status < 500) {
+          return false;
+        }
+        return failureCount < 3;
+      },
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes
       refetchOnWindowFocus: false,
-      staleTime: Infinity,
-      retry: false,
+      refetchOnMount: true,
     },
     mutations: {
-      retry: false,
+      retry: (failureCount, error) => {
+        // Don't retry client errors
+        if (error instanceof ApiError && error.status >= 400 && error.status < 500) {
+          return false;
+        }
+        return failureCount < 2;
+      },
     },
   },
 });

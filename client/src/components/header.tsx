@@ -28,23 +28,19 @@ export default function Header({ onGenerateIdea }: HeaderProps) {
               </div>
             </Link>
             <nav className="hidden md:flex space-x-8">
-              <Link href="/dashboard">
-                <a className={`pb-4 transition-colors ${
-                  isActive("/dashboard") 
-                    ? "text-primary font-medium border-b-2 border-primary" 
-                    : "text-muted-foreground hover:text-foreground"
-                }`}>
-                  Dashboard
-                </a>
+              <Link href="/dashboard" className={`pb-4 transition-colors ${
+                isActive("/dashboard") 
+                  ? "text-primary font-medium border-b-2 border-primary" 
+                  : "text-muted-foreground hover:text-foreground"
+              }`}>
+                Dashboard
               </Link>
-              <Link href="/opportunities">
-                <a className={`pb-4 transition-colors ${
-                  isActive("/opportunities") 
-                    ? "text-primary font-medium border-b-2 border-primary" 
-                    : "text-muted-foreground hover:text-foreground"
-                }`}>
-                  Opportunities
-                </a>
+              <Link href="/opportunities" className={`pb-4 transition-colors ${
+                isActive("/opportunities") 
+                  ? "text-primary font-medium border-b-2 border-primary" 
+                  : "text-muted-foreground hover:text-foreground"
+              }`}>
+                Opportunities
               </Link>
               <Link href="/communities">
                 <a className={`pb-4 transition-colors ${

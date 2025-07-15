@@ -41,6 +41,7 @@ export async function generateSaaSIdea(painPointText: string): Promise<Generated
         }
       ],
       response_format: { type: "json_object" },
+      timeout: 30000, // 30 second timeout
     });
 
     const result = JSON.parse(response.choices[0].message.content || "{}");
@@ -84,6 +85,7 @@ export async function analyzePainPoints(discussions: string[]): Promise<{
         }
       ],
       response_format: { type: "json_object" },
+      timeout: 30000, // 30 second timeout
     });
 
     const result = JSON.parse(response.choices[0].message.content || "{}");
