@@ -1,0 +1,138 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(220, 17%, 98%);
+  --foreground: hsl(213, 17%, 12%);
+  --muted: hsl(220, 13%, 95%);
+  --muted-foreground: hsl(220, 9%, 46%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(213, 17%, 12%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(213, 17%, 12%);
+  --border: hsl(220, 13%, 91%);
+  --input: hsl(220, 13%, 91%);
+  --primary: hsl(241, 88%, 67%);
+  --primary-foreground: hsl(210, 40%, 98%);
+  --secondary: hsl(155, 62%, 44%);
+  --secondary-foreground: hsl(220, 9%, 46%);
+  --accent: hsl(35, 94%, 49%);
+  --accent-foreground: hsl(35, 30%, 20%);
+  --destructive: hsl(0, 85%, 60%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(241, 88%, 67%);
+  --radius: 0.5rem;
+  
+  /* SaaS Radar custom colors */
+  --saas-primary: hsl(241, 88%, 67%);
+  --saas-secondary: hsl(155, 62%, 44%);
+  --saas-accent: hsl(35, 94%, 49%);
+  --saas-background: hsl(220, 17%, 98%);
+  --saas-text: hsl(213, 17%, 12%);
+  --saas-alert: hsl(0, 85%, 60%);
+}
+
+.dark {
+  --background: hsl(224, 71%, 4%);
+  --foreground: hsl(213, 31%, 91%);
+  --muted: hsl(223, 47%, 11%);
+  --muted-foreground: hsl(215, 20%, 65%);
+  --popover: hsl(224, 71%, 4%);
+  --popover-foreground: hsl(213, 31%, 91%);
+  --card: hsl(224, 71%, 4%);
+  --card-foreground: hsl(213, 31%, 91%);
+  --border: hsl(216, 34%, 17%);
+  --input: hsl(216, 34%, 17%);
+  --primary: hsl(241, 88%, 67%);
+  --primary-foreground: hsl(210, 40%, 98%);
+  --secondary: hsl(155, 62%, 44%);
+  --secondary-foreground: hsl(213, 31%, 91%);
+  --accent: hsl(35, 94%, 49%);
+  --accent-foreground: hsl(213, 31%, 91%);
+  --destructive: hsl(0, 63%, 31%);
+  --destructive-foreground: hsl(213, 31%, 91%);
+  --ring: hsl(216, 34%, 17%);
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer components {
+  .opportunity-card {
+    @apply bg-card rounded-xl p-6 shadow-sm border border-border hover:shadow-md transition-shadow;
+  }
+  
+  .stats-card {
+    @apply bg-card rounded-xl p-6 shadow-sm border border-border;
+  }
+  
+  .activity-item {
+    @apply flex items-start space-x-3 p-2 hover:bg-muted/50 rounded-lg transition-colors;
+  }
+  
+  .community-item {
+    @apply flex items-center justify-between p-3 hover:bg-muted/50 rounded-lg transition-colors;
+  }
+  
+  .score-badge {
+    @apply text-2xl font-bold;
+    color: var(--saas-primary);
+  }
+  
+  .potential-badge {
+    @apply px-2 py-1 text-xs font-medium rounded-full;
+  }
+  
+  .potential-badge.high {
+    background-color: hsl(155, 62%, 44%, 0.1);
+    color: var(--saas-secondary);
+  }
+  
+  .potential-badge.trending {
+    background-color: hsl(35, 94%, 49%, 0.1);
+    color: var(--saas-accent);
+  }
+  
+  .potential-badge.medium {
+    background-color: hsl(220, 13%, 95%);
+    color: var(--muted-foreground);
+  }
+  
+  .activity-dot {
+    @apply w-2 h-2 rounded-full mt-2 flex-shrink-0;
+  }
+  
+  .activity-dot.primary {
+    background-color: var(--saas-primary);
+  }
+  
+  .activity-dot.secondary {
+    background-color: var(--saas-secondary);
+  }
+  
+  .activity-dot.accent {
+    background-color: var(--saas-accent);
+  }
+  
+  .activity-dot.alert {
+    background-color: var(--saas-alert);
+  }
+}
+
+@layer utilities {
+  .animate-pulse-dot {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+}
