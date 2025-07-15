@@ -117,25 +117,24 @@ export default function Dashboard() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All Categories</SelectItem>
-                        <SelectItem value="developer tools">Developer Tools</SelectItem>
-                        <SelectItem value="hr & wellness">HR & Wellness</SelectItem>
-                        <SelectItem value="finance">Finance</SelectItem>
-                        <SelectItem value="productivity">Productivity</SelectItem>
-                        <SelectItem value="healthcare">Healthcare</SelectItem>
-                        <SelectItem value="e-commerce">E-commerce</SelectItem>
-                        <SelectItem value="education">Education</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Select value={sortBy} onValueChange={setSortBy}>
-                      <SelectTrigger className="w-40">
-                        <SelectValue placeholder="Sort by" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="score">Score: High to Low</SelectItem>
-                        <SelectItem value="recent">Recent</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                      <SelectItem value="developer tools">Developer Tools</SelectItem>
+                      <SelectItem value="hr & wellness">HR & Wellness</SelectItem>
+                      <SelectItem value="finance">Finance</SelectItem>
+                      <SelectItem value="productivity">Productivity</SelectItem>
+                      <SelectItem value="healthcare">Healthcare</SelectItem>
+                      <SelectItem value="e-commerce">E-commerce</SelectItem>
+                      <SelectItem value="education">Education</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Select value={sortBy} onValueChange={setSortBy}>
+                    <SelectTrigger className="w-40">
+                      <SelectValue placeholder="Sort by" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="score">Score: High to Low</SelectItem>
+                      <SelectItem value="recent">Recent</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </div>
@@ -244,3 +243,5 @@ export default function Dashboard() {
     </div>
   );
 }
+
+export default Dashboard;
