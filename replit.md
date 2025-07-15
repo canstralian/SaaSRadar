@@ -26,6 +26,15 @@ Preferred communication style: Simple, everyday language.
 - **Session Management**: In-memory storage with plans for PostgreSQL sessions
 - **AI Integration**: OpenAI API for generating SaaS ideas and analyzing pain points
 
+### MCP Simulator Architecture (Added 2025-01-15)
+- **Core Components**:
+  - **MCP Simulator Service**: Executes MCP tools with parameter validation and result tracking
+  - **Context Extractor**: Ghostwriter-style context extraction from multiple sources (file, git, API, database)
+  - **GitHub PR Bot**: CI/CD integration for automatic PR analysis and MCP context injection
+- **Tool System**: Extensible tool registration with JSON schema validation
+- **Context Providers**: Pluggable providers for different data sources with caching support
+- **Request Tracking**: Complete audit trail of all tool executions with timing and error handling
+
 ### Key Components
 
 #### Database Schema
@@ -33,12 +42,22 @@ Preferred communication style: Simple, everyday language.
 - **Communities**: Tracked online communities (Reddit, Twitter, LinkedIn, HackerNews)
 - **Pain Points**: Detected user frustrations and problems from communities
 - **Activity Feed**: Real-time updates and system events
+- **MCP Tools**: Configurable tools with JSON schema validation for parameter checking
+- **MCP Context Providers**: Data source configurations for context extraction
+- **MCP Requests**: Audit trail of all tool executions with results and timing
+- **MCP Context Cache**: Cached context data with TTL support
+- **GitHub PR Integrations**: PR analysis results and MCP context injection records
 
 #### API Structure
 - RESTful endpoints for CRUD operations on opportunities, communities, and pain points
 - AI-powered endpoints for generating business ideas from pain points
 - Activity feed for real-time updates
 - Statistics endpoints for dashboard metrics
+- MCP Tool management and execution endpoints (`/api/mcp/tools`)
+- Context provider management and extraction endpoints (`/api/mcp/providers`)
+- MCP request history tracking (`/api/mcp/requests`)
+- Context cache search functionality (`/api/mcp/context/search`)
+- GitHub webhook integration for PR analysis (`/api/github/webhook`)
 
 #### Storage Layer
 - Interface-based storage system with both in-memory and PostgreSQL implementations

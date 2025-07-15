@@ -2,7 +2,17 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { generateSaaSIdea, analyzePainPoints } from "./services/openai";
-import { insertOpportunitySchema, insertCommunitySchema, insertPainPointSchema, insertActivityFeedSchema } from "@shared/schema";
+import { mcpSimulator } from "./services/mcp-simulator";
+import { contextExtractor } from "./services/context-extractor";
+import { githubPRBot } from "./services/github-pr-bot";
+import { 
+  insertOpportunitySchema, 
+  insertCommunitySchema, 
+  insertPainPointSchema, 
+  insertActivityFeedSchema,
+  insertMcpToolSchema,
+  insertMcpContextProviderSchema
+} from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
@@ -167,6 +177,139 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(stats);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch stats" });
+    }
+  });
+
+  // MCP Tools Routes
+  app.get("/api/mcp/tools", async (req, res) => {
+    try {
+      const tools = await storage.getMcpTools();
+      res.json(tools);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/mcp/tools/:id", async (req, res) => {
+    try {
+      const tool = await storage.getMcpTool(parseInt(req.params.id));
+      if (!tool) {
+        return res.status(404).json({ error: "Tool not found" });
+      }
+      res.json(tool);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/mcp/tools", async (req, res) => {
+    try {
+      const validation = insertMcpToolSchema.safeParse(req.body);
+      if (!validation.success) {
+        return res.status(400).json({ error: validation.error });
+      }
+      const tool = await storage.createMcpTool(validation.data);
+      res.json(tool);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/mcp/tools/:id/execute", async (req, res) => {
+    try {
+      const result = await mcpSimulator.executeTool(
+        parseInt(req.params.id),
+        req.body.params || {}
+      );
+      res.json(result);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // MCP Context Providers Routes
+  app.get("/api/mcp/providers", async (req, res) => {
+    try {
+      const providers = await storage.getMcpContextProviders();
+      res.json(providers);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/mcp/providers", async (req, res) => {
+    try {
+      const validation = insertMcpContextProviderSchema.safeParse(req.body);
+      if (!validation.success) {
+        return res.status(400).json({ error: validation.error });
+      }
+      const provider = await storage.createMcpContextProvider(validation.data);
+      res.json(provider);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/mcp/providers/:id/extract", async (req, res) => {
+    try {
+      const results = await contextExtractor.extractContext(parseInt(req.params.id));
+      res.json(results);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // MCP Requests History
+  app.get("/api/mcp/requests", async (req, res) => {
+    try {
+      const requests = await storage.getMcpRequests();
+      res.json(requests);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // MCP Context Cache
+  app.get("/api/mcp/context", async (req, res) => {
+    try {
+      const providerId = req.query.providerId ? parseInt(req.query.providerId as string) : undefined;
+      const cache = await storage.getMcpContextCache(providerId);
+      res.json(cache);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/mcp/context/search", async (req, res) => {
+    try {
+      const query = req.query.q as string;
+      if (!query) {
+        return res.status(400).json({ error: "Query parameter 'q' is required" });
+      }
+      const results = await contextExtractor.searchContext(query);
+      res.json(results);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // GitHub PR Integration Routes
+  app.get("/api/github/integrations", async (req, res) => {
+    try {
+      const integrations = await storage.getGithubPRIntegrations();
+      res.json(integrations);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/github/webhook", async (req, res) => {
+    try {
+      const event = req.headers["x-github-event"] as string;
+      await githubPRBot.handleWebhook(event, req.body);
+      res.json({ message: "Webhook processed" });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
     }
   });
 
