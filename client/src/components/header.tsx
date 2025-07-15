@@ -4,7 +4,7 @@ import { Bell, Plus, Radar, Menu } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { useIsMobile } from "@/hooks/use-is-mobile";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface HeaderProps {
   onGenerateIdea?: () => void;
@@ -19,33 +19,41 @@ export default function Header({ onGenerateIdea }: { onGenerateIdea: () => void 
 
   const NavigationItems = () => (
     <>
-      <Link href="/dashboard" className={`pb-4 transition-colors ${
-        isActive("/dashboard") 
-          ? "text-primary font-medium border-b-2 border-primary" 
-          : "text-muted-foreground hover:text-foreground"
-      }`}>
-        Dashboard
+      <Link href="/dashboard">
+        <span className={`pb-4 transition-colors cursor-pointer ${
+          isActive("/dashboard") 
+            ? "text-primary font-medium border-b-2 border-primary" 
+            : "text-muted-foreground hover:text-foreground"
+        }`}>
+          Dashboard
+        </span>
       </Link>
-      <Link href="/opportunities" className={`pb-4 transition-colors ${
-        isActive("/opportunities") 
-          ? "text-primary font-medium border-b-2 border-primary" 
-          : "text-muted-foreground hover:text-foreground"
-      }`}>
-        Opportunities
+      <Link href="/opportunities">
+        <span className={`pb-4 transition-colors cursor-pointer ${
+          isActive("/opportunities") 
+            ? "text-primary font-medium border-b-2 border-primary" 
+            : "text-muted-foreground hover:text-foreground"
+        }`}>
+          Opportunities
+        </span>
       </Link>
-      <Link href="/communities" className={`pb-4 transition-colors ${
-        isActive("/communities") 
-          ? "text-primary font-medium border-b-2 border-primary" 
-          : "text-muted-foreground hover:text-foreground"
-      }`}>
-        Communities
+      <Link href="/communities">
+        <span className={`pb-4 transition-colors cursor-pointer ${
+          isActive("/communities") 
+            ? "text-primary font-medium border-b-2 border-primary" 
+            : "text-muted-foreground hover:text-foreground"
+        }`}>
+          Communities
+        </span>
       </Link>
-      <Link href="/mcp" className={`pb-4 transition-colors ${
-        isActive("/mcp") 
-          ? "text-primary font-medium border-b-2 border-primary" 
-          : "text-muted-foreground hover:text-foreground"
-      }`}>
-        MCP Simulator
+      <Link href="/mcp">
+        <span className={`pb-4 transition-colors cursor-pointer ${
+          isActive("/mcp") 
+            ? "text-primary font-medium border-b-2 border-primary" 
+            : "text-muted-foreground hover:text-foreground"
+        }`}>
+          MCP Simulator
+        </span>
       </Link>
     </>
   );
