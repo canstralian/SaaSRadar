@@ -71,7 +71,7 @@
 
 @layer components {
   .opportunity-card {
-    @apply bg-card rounded-xl p-6 shadow-sm border border-border hover:shadow-md transition-shadow;
+    @apply bg-card rounded-xl p-4 lg:p-6 shadow-sm border border-border hover:shadow-md transition-shadow;
   }
   
   .stats-card {
@@ -134,5 +134,17 @@
 @layer utilities {
   .animate-pulse-dot {
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  .mobile-friendly {
+    @apply text-sm sm:text-base;
+  }
+  
+  .mobile-padding {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+  
+  .mobile-grid {
+    @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
   }
 }

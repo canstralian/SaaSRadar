@@ -78,17 +78,17 @@ export default function OpportunityCard({ opportunity }: OpportunityCardProps) {
           </div>
         </div>
         
-        <div className="grid grid-cols-3 gap-4 pt-4 border-t border-border">
+        <div className="grid grid-cols-3 gap-2 lg:gap-4 pt-4 border-t border-border">
           <div className="text-center">
-            <div className="text-lg font-semibold text-foreground">{opportunity.estimatedRevenue}</div>
+            <div className="text-sm lg:text-lg font-semibold text-foreground">{opportunity.estimatedRevenue}</div>
             <div className="text-xs text-muted-foreground">Est. Monthly Revenue</div>
           </div>
           <div className="text-center">
-            <div className="text-lg font-semibold text-foreground">{opportunity.competitionLevel}</div>
+            <div className="text-sm lg:text-lg font-semibold text-foreground">{opportunity.competitionLevel}</div>
             <div className="text-xs text-muted-foreground">Competition Level</div>
           </div>
           <div className="text-center">
-            <div className="text-lg font-semibold text-foreground">{opportunity.timeToMarket}</div>
+            <div className="text-sm lg:text-lg font-semibold text-foreground">{opportunity.timeToMarket}</div>
             <div className="text-xs text-muted-foreground">Time to Market</div>
           </div>
         </div>

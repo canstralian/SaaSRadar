@@ -94,14 +94,14 @@ export default function Dashboard() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <StatsOverview />
         
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-8">
+          <div className="lg:col-span-2 space-y-4 lg:space-y-6">
             {/* Filter Controls */}
-            <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
-                <h2 className="text-xl font-bold text-foreground">Trending Opportunities</h2>
-                <div className="flex items-center space-x-4">
-                  <div className="relative">
+            <div className="bg-card rounded-xl p-4 lg:p-6 shadow-sm border border-border">
+              <div className="flex flex-col space-y-4">
+                <h2 className="text-lg lg:text-xl font-bold text-foreground">Trending Opportunities</h2>
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                  <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                     <Input
                       placeholder="Search opportunities..."
@@ -110,12 +110,13 @@ export default function Dashboard() {
                       onChange={(e) => setSearchTerm(e.target.value)}
                     />
                   </div>
-                  <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                    <SelectTrigger className="w-40">
-                      <SelectValue placeholder="Category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Categories</SelectItem>
+                  <div className="flex gap-2 sm:gap-4">
+                    <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                      <SelectTrigger className="w-full sm:w-40">
+                        <SelectValue placeholder="Category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Categories</SelectItem>
                       <SelectItem value="developer tools">Developer Tools</SelectItem>
                       <SelectItem value="hr & wellness">HR & Wellness</SelectItem>
                       <SelectItem value="finance">Finance</SelectItem>
