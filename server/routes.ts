@@ -122,6 +122,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Opportunities routes
+  app.get("/api/opportunities", async (req, res) => {
+    try {
+      const opportunities = await storage.getOpportunities();
+      res.json(opportunities);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch opportunities" });
+    }
+  });
+
+  app.post("/api/opportunities", async (req, res) => {
+    try {
+      const validatedData = insertOpportunitySchema.parse(req.body);
+      const opportunity = await storage.createOpportunity(validatedData);
+      
+      // Create activity feed item
+      await storage.createActivityFeedItem({
+        type: "opportunity",
+        message: `New opportunity identified: ${opportunity.title}`,
+        metadata: { opportunityId: opportunity.id, viabilityScore: opportunity.viabilityScore }
+      });
+      
+      res.json(opportunity);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid opportunity data" });
+    }
+  });
+
+  // Stats route
+  app.get("/api/stats", async (req, res) => {
+    try {
+      const stats = await storage.getStats();
+      res.json(stats);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch stats" });
+    }
+  });
+
+  // Activity feed route
+  app.get("/api/activity-feed", async (req, res) => {
+    try {
+      const activityFeed = await storage.getActivityFeed();
+      res.json(activityFeed);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch activity feed" });
+    }
+  });
+
   // Pain points routes
   app.get("/api/pain-points", async (req, res) => {
     try {
