@@ -1,0 +1,130 @@
+### 🔐 Secure Integration of `ANTHROPIC_API_KEY` and `GOOGLE_AI_KEY` for AI-Enhanced CCTV Security Software
+
+---
+
+## 1. ✅ Access & Configure Secrets Management System
+
+**Tool Recommendation**: Use **HashiCorp Vault**, **AWS Secrets Manager**, or **Doppler** depending on your infrastructure.
+
+### 1.1 Initialize Secrets Storage
+
+* Set up namespaces or project-specific scopes.
+* Define **key-value pairs** within a secure path (`/ai-cctv/keys/`).
+* Ensure high-availability and disaster recovery configuration is enabled.
+
+---
+
+## 2. 🔏 Add & Protect API Keys
+
+### 2.1 Store API Keys
+
+```bash
+vault kv put secret/ai-cctv/ANTHROPIC_API_KEY value="sk-anthropic-xxx"
+vault kv put secret/ai-cctv/GOOGLE_AI_KEY value="AIzaSy-xxx"
+```
+
+### 2.2 Label Keys Clearly
+
+```json
+{
+  "label": "Anthropic Claude API Key",
+  "key": "ANTHROPIC_API_KEY",
+  "env": "production",
+  "usage": "Natural language processing for event descriptions"
+}
+```
+
+### 2.3 Enable Encryption & Rotation
+
+* **Enable Transit Encryption** on read.
+* Automate **90-day rotation** with notification hooks.
+* Use AES-256-GCM with authenticated encryption.
+* Require **2FA/MFA** for admin access.
+
+---
+
+## 3. 🔐 RBAC Enforcement
+
+| Role     | Permissions                       |
+| -------- | --------------------------------- |
+| Admin    | Read/Write/Delete API keys        |
+| IT Ops   | Read-only on non-prod             |
+| App      | Read-only scoped access via token |
+| Auditors | Read audit logs only              |
+
+* Use **Vault Policies** or IAM roles to enforce access.
+* Use signed tokens (JWT with expiration and scopes).
+
+---
+
+## 4. ⚙️ Software Integration
+
+### 4.1 Dynamic Retrieval at Runtime
+
+**FastAPI/Flask Integration (Python)**:
+
+```python
+import os
+from hvac import Client
+
+def get_secret(key_name):
+    client = Client(url="https://vault.myorg.local", token=os.getenv("VAULT_TOKEN"))
+    secret = client.secrets.kv.v2.read_secret_version(path=f"ai-cctv/{key_name}")
+    return secret['data']['data']['value']
+```
+
+### 4.2 Use Keys in API Modules
+
+```python
+import anthropic
+import google.generativeai as palm
+
+anthropic_client = anthropic.Client(api_key=get_secret("ANTHROPIC_API_KEY"))
+google_ai_client = palm.configure(api_key=get_secret("GOOGLE_AI_KEY"))
+```
+
+---
+
+## 5. 📈 Monitoring & Logging
+
+### 5.1 API Usage Analytics
+
+* Log API call metadata (timestamp, module, latency, key usage count).
+* Track **rate limit headers** and trigger alerts on near-threshold usage.
+
+### 5.2 Log Example (Structured)
+
+```json
+{
+  "timestamp": "2025-07-16T03:05:23Z",
+  "module": "object_recognition",
+  "api": "Anthropic",
+  "status": 200,
+  "latency_ms": 473,
+  "user": "cctv-agent-1"
+}
+```
+
+### 5.3 Tooling
+
+* Use **ELK Stack** or **Prometheus + Loki** for log collection and Grafana dashboards.
+* Anomaly detection on usage spikes (e.g., overuse, unauthorized module).
+
+---
+
+## 6. 🛠️ Maintenance & Audit Routine
+
+| Task                         | Frequency     | Responsible       |
+| ---------------------------- | ------------- | ----------------- |
+| Key Rotation                 | Every 90 days | IT Security Team  |
+| Secrets Policy Audit         | Monthly       | Compliance Team   |
+| Access Logs Review           | Weekly        | Security Analyst  |
+| Performance Tuning (API)     | Monthly       | DevOps            |
+| Secrets Integrity Validation | Quarterly     | Automation Script |
+
+* Generate reports for **SOC 2 / ISO 27001** compliance.
+* Use automation tools (e.g., `vault-renew`, `secrethub`, GitHub Actions).
+
+---
+
+By integrating `ANTHROPIC_API_KEY` and `GOOGLE_AI_KEY` into a secure, observable, and maintainable secret management pipeline, your AI-enhanced CCTV system remains robust, auditable, and optimized for advanced video analysis, anomaly detection, and natural language alerting.
